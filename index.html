@@ -35,7 +35,7 @@
   .search input { width: 100%; font: 800 16px Montserrat, sans-serif; color: #1A1F36; background: #FFF8EC; border: 3px solid var(--gold); border-radius: 16px; padding: 12px 44px 12px 16px; outline: none; }
   .search input::placeholder { color: #8A7E66; font-weight: 600; }
   .search .go { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: 0; background: none; font-size: 22px; cursor: pointer; }
-  .sugg { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: #FFF8EC; border-radius: 14px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,.5); display: none; }
+  .sugg { position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: #FFF8EC; border-radius: 14px; overflow: hidden auto; max-height: 55vh; box-shadow: 0 12px 30px rgba(0,0,0,.5); display: none; }
   .sugg button { display: block; width: 100%; text-align: left; padding: 11px 16px; border: 0; border-top: 1px solid #EADFC7; background: none; font: 800 15px Montserrat, sans-serif; color: #1A1F36; cursor: pointer; }
   .sugg button:first-child { border-top: 0; }
   .sugg button:hover, .sugg button.on { background: #FFE9A8; }
@@ -79,8 +79,9 @@
   .places::-webkit-scrollbar { display: none; }
   .chip { flex: 0 0 auto; border: 2px solid var(--line); background: var(--card); color: #fff; font: 800 13px Montserrat, sans-serif; padding: 7px 12px; border-radius: 14px; cursor: pointer; white-space: nowrap; }
   .chip.on { background: var(--gold); color: #1A1F36; border-color: var(--gold); }
-  .mini { position: fixed; right: 12px; top: calc(150px + env(safe-area-inset-top)); width: 150px; height: 150px; border-radius: 50%; border: 3px solid var(--gold); background: rgba(8,13,40,.9); z-index: 5; display: none; cursor: crosshair; box-shadow: 0 8px 22px rgba(0,0,0,.5); }
+  .mini { position: fixed; right: 12px; top: calc(150px + env(safe-area-inset-top)); width: 150px; height: 150px; border-radius: 16px; border: 3px solid var(--gold); background: rgba(8,13,40,.9); z-index: 5; display: none; cursor: crosshair; box-shadow: 0 8px 22px rgba(0,0,0,.5); }
   .mini.show { display: block; }
+  .mini.big { right: 50%; transform: translateX(50%); width: min(92vw, 560px); height: min(92vw, 560px); }
   .joy { position: fixed; left: 22px; bottom: calc(26px + env(safe-area-inset-bottom)); width: 128px; height: 128px; border-radius: 50%; background: rgba(255,255,255,.12); border: 3px solid rgba(255,255,255,.35); z-index: 6; display: none; touch-action: none; }
   .joy.show { display: block; }
   .joy .knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: var(--gold); box-shadow: 0 4px 14px rgba(0,0,0,.5); }
@@ -100,7 +101,8 @@
 
 <div class="top" id="top">
   <div class="brand">
-    <h1>ОКУЯ-<span>ШААР</span> 🏙</h1>
+    <h1>ОКУЯ-<span>ШААР</span></h1>
+    <div class="count">👥 <b id="cnt">…</b> тургун · 🆕 <b id="cntNew">…</b></div>
   </div>
   <div class="search">
     <input id="q" type="search" placeholder="Никиңди жаз — үйүңдү тап 🔎" autocomplete="off" autocapitalize="off" spellcheck="false" />
@@ -108,13 +110,22 @@
     <div class="sugg" id="sugg"></div>
   </div>
   <div class="places" id="places">
-    <button class="chip" data-go="palace">🏰 Сарай</button>
-    <button class="chip" data-go="arena">🏟 Арена</button>
-    <button class="chip" data-go="plaza">🎄 Аянт</button>
-    <button class="chip" data-go="wheel">🎡 Айлампа</button>
-    <button class="chip" data-go="tower">🏢 Мунара</button>
-    <button class="chip" data-go="walk">🚶 Сейилде</button>
+    <button class="chip" data-go="new">🆕 Жаңылар</button>
+    <button class="chip" data-go="burj">🏙 Бурдж-Халифа</button>
     <button class="chip" data-go="map">🗺 Карта</button>
+    <button class="chip" data-go="walk">🚶 Сейилде</button>
+    <button class="chip" data-go="arena">🏟 Бишкек Арена</button>
+    <button class="chip" data-go="air">✈️ Аэропорт</button>
+    <button class="chip" data-go="palace">👑 Сарай</button>
+    <button class="chip" data-go="tower">🏢 Тауэр</button>
+    <button class="chip" data-go="mall">🛍 Молл</button>
+    <button class="chip" data-go="luna">🎡 Луна-парк</button>
+    <button class="chip" data-go="hospital">🏥 Оорукана</button>
+    <button class="chip" data-go="cinema">🎬 Кино</button>
+    <button class="chip" data-go="gym">🤼 Күрөш</button>
+    <button class="chip" data-go="fire">🚒 Өрт</button>
+    <button class="chip" data-go="mosque">🕌 Мечит</button>
+    <button class="chip" data-go="square">🎄 Аянт</button>
     <button class="chip" data-go="top">🔭 Шаар</button>
   </div>
 </div>
@@ -154,7 +165,7 @@
   <div class="sheet">
     <h3>⭐ Үйүңдү жакшырт</h3>
     <p>Кандай үй каалайсың? <b>@bir.okuya.kg</b> баракчасындагы акыркы видеого комментке жаз — кийинки серияда курабыз!</p>
-    <div class="tags"><span>2 кабат</span><span>3 кабат</span><span>сарай</span><span>көк үй</span><span>машина</span><span>ёлка</span><span>дүкөн</span></div>
+    <div class="tags"><span>2 кабат</span><span>10 кабат</span><span>особняк</span><span>машина</span><span>дүкөн</span><span>Бурдж-Халифа</span></div>
     <p style="font-size:13px;color:#7A6A48">Мисал: «2 кабат, көк үй». Үй жазылуучуларга гана берилет 🔑</p>
     <div class="row">
       <a class="btn blue" style="text-align:center;text-decoration:none" href="https://www.instagram.com/bir.okuya.kg/" target="_blank" rel="noopener">Instagram'га өт</a>
@@ -167,7 +178,7 @@
   <div class="sheet">
     <h3>Үй табылган жок 😅</h3>
     <p id="mNoText"></p>
-    <p>Үй алуу үчүн: <b>1.</b> @bir.okuya.kg жазыл <b>2.</b> Акыркы видеого комментке атыңды жаз. Шаарды ар бир сериядан кийин жаңылайбыз! <span style="color:#7A6A48">(акыркы жаңылоо: <span id="upd"></span>)</span></p>
+    <p>Үй алуу үчүн: <b>1.</b> @bir.okuya.kg жазыл <b>2.</b> Акыркы видеого комментке атыңды жаз. Шаарды күн сайын жаңылайбыз! <span style="color:#7A6A48">(акыркы жаңылоо: <span id="upd"></span>)</span></p>
     <div class="row">
       <a class="btn blue" style="text-align:center;text-decoration:none" href="https://www.instagram.com/bir.okuya.kg/" target="_blank" rel="noopener">Жазылуу</a>
       <button class="btn alt" id="mNoClose">Жабуу</button>
@@ -178,12 +189,6 @@
 <div class="toast" id="toast"></div>
 <div class="loading" id="loading"><div class="big">ОКУЯ-<span>ШААР</span> 🏙</div><div class="small">Шаар курулуп жатат…</div></div>
 
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-} }
-</script>
-<script type="module" src="./app.js"></script>
+<script type="module" src="./app.js?v=7"></script>
 </body>
 </html>
